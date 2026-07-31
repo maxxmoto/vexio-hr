@@ -5,7 +5,7 @@ import { ArrowUpRight, Code2, Sparkles, Zap, ArrowRight, Heart, X } from 'lucide
 export default function App() {
   const [scrolled, setScrolled] = useState(false);
 
-  const words = ['продающий', 'безупречный', 'мощный', 'ваш'];
+  const words = ['доходный', 'лучший', 'мощный', 'ваш'];
 
   const [displayText, setDisplayText] = useState(words[0][0]);
   const [wordIndex, setWordIndex] = useState(0);
@@ -195,8 +195,9 @@ export default function App() {
       {/* Навигация */}
       <nav className={`fixed w-full top-0 z-40 transition-all duration-300 border-b ${scrolled ? 'bg-[#09090b]/80 backdrop-blur-md border-zinc-800 py-4' : 'bg-transparent border-transparent py-6'}`}>
         <div className="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
-          <div className="font-display font-black text-2xl tracking-tighter flex items-center gap-2">
-            VEXIO <span className="text-emerald-400 text-sm font-body font-bold px-2 py-1 border border-emerald-400 rounded-full">HR</span>
+           <div className="font-display font-black text-2xl tracking-tighter flex items-center gap-2">
+            <img src="/logo.png" alt="VEXIO" className="h-8 w-auto" style={{ transform: 'scale(1.4)' }} />
+            <span className="text-emerald-400 text-sm font-body font-bold px-2 py-1 border border-emerald-400 rounded-full">HR</span>
           </div>
           <div className="hidden md:flex gap-8 font-bold text-sm uppercase tracking-widest">
             <a href="#culture" className="hover:text-emerald-400 transition-colors hover:-translate-y-1 transform inline-block">Культура</a>
@@ -301,7 +302,7 @@ export default function App() {
           <JobCard 
             title="UX/UI Designer" 
             stack="Figma / Animations / UX Research" 
-            tag="Офис / Гибрид" 
+            tag="Удаленка" 
             color="hover:bg-purple-500"
             onApply={openModal}
           />
@@ -437,7 +438,7 @@ export default function App() {
 // Компонент карточки вакансии
 function JobCard({ title, stack, tag, color, onApply }) {
   return (
-    <div onClick={() => onApply(title)} className={`group relative flex flex-col md:flex-row justify-between md:items-center p-8 border-t border-zinc-800 transition-colors duration-300 cursor-pointer ${color} hover:text-black`}>
+    <div onClick={() => onApply(title)} className={`group relative flex flex-col md:flex-row justify-between md:items-center p-8 border-t border-zinc-800 transition-colors duration-300 cursor-pointer ${color} hover:text-black md:hover:text-black max-md:bg-opacity-20 max-md:[&_.opacity-0]:opacity-100 max-md:[-translate-x-4]:translate-x-0`}>
       <div className="z-10">
         <div className="flex items-center gap-4 mb-2">
           <span className="text-xs font-bold uppercase tracking-wider px-3 py-1 border border-current rounded-full">
@@ -453,10 +454,10 @@ function JobCard({ title, stack, tag, color, onApply }) {
       </div>
       
       <div className="mt-6 md:mt-0 z-10 flex items-center gap-4">
-        <span className="font-bold uppercase tracking-widest text-sm opacity-0 group-hover:opacity-100 transition-opacity -translate-x-4 group-hover:translate-x-0 duration-300">
+        <span className="font-bold uppercase tracking-widest text-sm md:opacity-0 md:group-hover:opacity-100 transition-opacity md:-translate-x-4 md:group-hover:translate-x-0 duration-300">
           Откликнуться
         </span>
-        <div className="w-16 h-16 rounded-full border-2 border-current flex items-center justify-center group-hover:bg-black group-hover:text-white transition-all transform group-hover:scale-110 group-hover:-rotate-45">
+        <div className="w-16 h-16 rounded-full border-2 border-current flex items-center justify-center md:group-hover:bg-black md:group-hover:text-white transition-all transform md:group-hover:scale-110 md:group-hover:-rotate-45">
           <ArrowUpRight size={32} strokeWidth={2} />
         </div>
       </div>
