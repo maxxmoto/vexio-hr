@@ -4,7 +4,12 @@ import { ArrowUpRight, Code2, Sparkles, Zap, ArrowRight, Heart } from 'lucide-re
 
 export default function App() {
   const [scrolled, setScrolled] = useState(false);
+  const [displayText, setDisplayText] = useState('');
+  const [wordIndex, setWordIndex] = useState(0);
+  const [charIndex, setCharIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
 
+  const words = ['продающий', 'безупречный', 'мощный', 'ваш'];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -13,6 +18,32 @@ export default function App() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    const currentWord = words[wordIndex];
+    const speed = isDeleting ? 50 : 100;
+    const pause = isDeleting ? 0 : 1500;
+
+    if (!isDeleting && charIndex === currentWord.length) {
+      setTimeout(() => setIsDeleting(true), pause);
+      return;
+    }
+
+    if (isDeleting && charIndex === 0) {
+      setTimeout(() => {
+        setIsDeleting(false);
+        setWordIndex((prev) => (prev + 1) % words.length);
+      }, 300);
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      setDisplayText(currentWord.substring(0, isDeleting ? charIndex - 1 : charIndex + 1));
+      setCharIndex((prev) => isDeleting ? prev - 1 : prev + 1);
+    }, speed);
+
+    return () => clearTimeout(timeout);
+  }, [charIndex, isDeleting, wordIndex]);
 
 
   return (
@@ -109,6 +140,21 @@ export default function App() {
         }
 
 
+        /* Печатная машинка */
+        .typewriter-cursor {
+          display: inline-block;
+          width: 3px;
+          background: #34d399;
+          animation: blink 0.8s step-end infinite;
+          margin-left: -2px;
+          position: relative;
+          top: -0.05em;
+        }
+        @keyframes blink {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0; }
+        }
+
         /* Эффект шума на фоне */
         .bg-noise {
           background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
@@ -145,7 +191,7 @@ export default function App() {
             Vexio Careers
           </p>
           <h1 className="text-[12vw] sm:text-7xl md:text-[6.5rem] leading-[0.9] font-display font-black uppercase tracking-tighter">
-            Мы пишем <span className="text-outline">продающий</span> код <br />
+            Мы пишем <span className="text-outline">{displayText || 'продающий'}<span className="typewriter-cursor">&nbsp;</span></span> код <br />
             и ищем <span className="marker-highlight">своих</span> людей
           </h1>
           <p className="mt-12 text-xl md:text-2xl text-zinc-400 max-w-2xl font-medium leading-relaxed">
