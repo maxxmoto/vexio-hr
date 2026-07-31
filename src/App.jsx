@@ -1,15 +1,37 @@
 import React, { useEffect, useState } from 'react';
-import { ArrowUpRight, Code2, Sparkles, Zap, ArrowRight, Heart } from 'lucide-react';
+import { ArrowUpRight, Code2, Sparkles, Zap, ArrowRight, Heart, X } from 'lucide-react';
 
 
 export default function App() {
   const [scrolled, setScrolled] = useState(false);
-  const [displayText, setDisplayText] = useState('');
-  const [wordIndex, setWordIndex] = useState(0);
-  const [charIndex, setCharIndex] = useState(0);
-  const [isDeleting, setIsDeleting] = useState(false);
 
   const words = ['продающий', 'безупречный', 'мощный', 'ваш'];
+
+  const [displayText, setDisplayText] = useState(words[0][0]);
+  const [wordIndex, setWordIndex] = useState(0);
+  const [charIndex, setCharIndex] = useState(1);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedJob, setSelectedJob] = useState('');
+  const [formName, setFormName] = useState('');
+  const [formTelegram, setFormTelegram] = useState('');
+  const [formPhone, setFormPhone] = useState('');
+  const [formSubmitted, setFormSubmitted] = useState(false);
+
+  const openModal = (job = '') => {
+    setSelectedJob(job);
+    setFormName('');
+    setFormTelegram('');
+    setFormPhone('');
+    setFormSubmitted(false);
+    setModalOpen(true);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setFormSubmitted(true);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,25 +46,30 @@ export default function App() {
     const speed = isDeleting ? 80 : 180;
     const pause = isDeleting ? 0 : 2500;
 
-    if (!isDeleting && charIndex === currentWord.length) {
-      setTimeout(() => setIsDeleting(true), pause);
-      return;
+    if (!isDeleting && charIndex >= currentWord.length) {
+      const t = setTimeout(() => setIsDeleting(true), pause);
+      return () => clearTimeout(t);
     }
 
-    if (isDeleting && charIndex === 0) {
-      setTimeout(() => {
+    if (isDeleting && charIndex <= 1) {
+      const nextIdx = (wordIndex + 1) % words.length;
+      const nextWord = words[nextIdx];
+      const t = setTimeout(() => {
+        setDisplayText(nextWord[0]);
+        setCharIndex(1);
         setIsDeleting(false);
-        setWordIndex((prev) => (prev + 1) % words.length);
+        setWordIndex(nextIdx);
       }, 300);
-      return;
+      return () => clearTimeout(t);
     }
 
-    const timeout = setTimeout(() => {
-      setDisplayText(currentWord.substring(0, isDeleting ? charIndex - 1 : charIndex + 1));
-      setCharIndex((prev) => isDeleting ? prev - 1 : prev + 1);
+    const nextChar = isDeleting ? charIndex - 1 : charIndex + 1;
+    const t = setTimeout(() => {
+      setDisplayText(currentWord.substring(0, nextChar));
+      setCharIndex(nextChar);
     }, speed);
 
-    return () => clearTimeout(timeout);
+    return () => clearTimeout(t);
   }, [charIndex, isDeleting, wordIndex]);
 
 
@@ -176,7 +203,7 @@ export default function App() {
             <a href="#vacancies" className="hover:text-purple-400 transition-colors hover:-translate-y-1 transform inline-block">Вакансии</a>
             <a href="#benefits" className="hover:text-rose-400 transition-colors hover:-translate-y-1 transform inline-block">Плюшки</a>
           </div>
-          <button className="bg-white text-black px-6 py-2 rounded-full font-bold hover:bg-emerald-400 hover:scale-105 transition-all">
+          <button onClick={() => openModal()} className="bg-white text-black px-6 py-2 rounded-full font-bold hover:bg-emerald-400 hover:scale-105 transition-all">
             Написать нам
           </button>
         </div>
@@ -191,11 +218,11 @@ export default function App() {
             Vexio Careers
           </p>
           <h1 className="text-[12vw] sm:text-7xl md:text-[6.5rem] leading-[0.9] font-display font-black uppercase tracking-tighter">
-            Мы пишем <span className="text-outline inline-block text-left min-w-[10ch]">{displayText || 'продающий'}<span className="typewriter-cursor">&nbsp;</span></span> код <br />
+            Мы пишем <span className="text-outline inline-block text-left min-w-[10ch]">{displayText}<span className="typewriter-cursor">&nbsp;</span></span> код <br />
             и ищем <span className="marker-highlight">своих</span> людей
           </h1>
           <p className="mt-12 text-xl md:text-2xl text-zinc-400 max-w-2xl font-medium leading-relaxed">
-            В Vexio нет микроменеджмента и унылых задач. Мы создаем сайты, которые получают награды, и сервисы, которыми пользуются миллионы. <span className="text-white border-b-2 border-emerald-400 hover:bg-emerald-400 hover:text-black transition-all cursor-pointer">Присоединяйся к нам.</span>
+            В Vexio нет микроменеджмента и унылых задач. Мы создаем сайты, которые получают награды, и сервисы, которыми пользуются все. <span className="text-white border-b-2 border-emerald-400 hover:bg-emerald-400 hover:text-black transition-all cursor-pointer">Присоединяйся к нам.</span>
           </p>
         </div>
         
@@ -211,19 +238,25 @@ export default function App() {
           <div className="marquee-container font-display font-black text-4xl md:text-6xl uppercase tracking-tight w-max">
             {/* Блок 1 */}
             <div className="flex items-center gap-8 md:gap-16 px-4 md:px-8">
-              <span>Удаленка</span> <Sparkles className="w-8 h-8 md:w-12 md:h-12 flex-shrink-0" />
-              <span>Гибкий график</span> <Sparkles className="w-8 h-8 md:w-12 md:h-12 flex-shrink-0" />
-              <span>Современный стек</span> <Sparkles className="w-8 h-8 md:w-12 md:h-12 flex-shrink-0" />
-              <span>ДМС</span> <Sparkles className="w-8 h-8 md:w-12 md:h-12 flex-shrink-0" />
+              <span>Вайбкод</span> <Sparkles className="w-8 h-8 md:w-12 md:h-12 flex-shrink-0" />
+              <span>Без графика</span> <Sparkles className="w-8 h-8 md:w-12 md:h-12 flex-shrink-0" />
+              <span>Идея</span> <Sparkles className="w-8 h-8 md:w-12 md:h-12 flex-shrink-0" />
+              <span>Топовый стек</span> <Sparkles className="w-8 h-8 md:w-12 md:h-12 flex-shrink-0" />
+              <span>Лучшая команда</span> <Sparkles className="w-8 h-8 md:w-12 md:h-12 flex-shrink-0" />
+              <span>Гениальные сайты</span> <Sparkles className="w-8 h-8 md:w-12 md:h-12 flex-shrink-0" />
               <span className="line-through opacity-50">Бюрократия</span> <Sparkles className="w-8 h-8 md:w-12 md:h-12 flex-shrink-0" />
+              <span className="line-through opacity-50">Переработки</span> <Sparkles className="w-8 h-8 md:w-12 md:h-12 flex-shrink-0" />
             </div>
             {/* Блок 2 (Дубликат для бесшовного скролла) */}
             <div className="flex items-center gap-8 md:gap-16 px-4 md:px-8">
-              <span>Удаленка</span> <Sparkles className="w-8 h-8 md:w-12 md:h-12 flex-shrink-0" />
-              <span>Гибкий график</span> <Sparkles className="w-8 h-8 md:w-12 md:h-12 flex-shrink-0" />
-              <span>Современный стек</span> <Sparkles className="w-8 h-8 md:w-12 md:h-12 flex-shrink-0" />
-              <span>ДМС</span> <Sparkles className="w-8 h-8 md:w-12 md:h-12 flex-shrink-0" />
+              <span>Вайбкод</span> <Sparkles className="w-8 h-8 md:w-12 md:h-12 flex-shrink-0" />
+              <span>Без графика</span> <Sparkles className="w-8 h-8 md:w-12 md:h-12 flex-shrink-0" />
+              <span>Идея</span> <Sparkles className="w-8 h-8 md:w-12 md:h-12 flex-shrink-0" />
+              <span>Топовый стек</span> <Sparkles className="w-8 h-8 md:w-12 md:h-12 flex-shrink-0" />
+              <span>Лучшая команда</span> <Sparkles className="w-8 h-8 md:w-12 md:h-12 flex-shrink-0" />
+              <span>Гениальные сайты</span> <Sparkles className="w-8 h-8 md:w-12 md:h-12 flex-shrink-0" />
               <span className="line-through opacity-50">Бюрократия</span> <Sparkles className="w-8 h-8 md:w-12 md:h-12 flex-shrink-0" />
+              <span className="line-through opacity-50">Переработки</span> <Sparkles className="w-8 h-8 md:w-12 md:h-12 flex-shrink-0" />
             </div>
           </div>
         </div>
@@ -263,24 +296,28 @@ export default function App() {
             stack="React / TypeScript / Three.js" 
             tag="Удаленка" 
             color="hover:bg-emerald-400"
+            onApply={openModal}
           />
           <JobCard 
             title="UX/UI Designer" 
             stack="Figma / Animations / UX Research" 
             tag="Офис / Гибрид" 
             color="hover:bg-purple-500"
+            onApply={openModal}
           />
           <JobCard 
             title="Middle Backend Developer" 
             stack="Node.js / PostgreSQL / Redis" 
             tag="Удаленка" 
             color="hover:bg-rose-500"
+            onApply={openModal}
           />
           <JobCard 
             title="Project Manager" 
             stack="Agile / Смысл / Здравый смысл" 
             tag="Удаленка" 
             color="hover:bg-blue-500"
+            onApply={openModal}
           />
         </div>
       </section>
@@ -302,7 +339,7 @@ export default function App() {
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-purple-400 to-rose-400">лучшей работе?</span>
         </h2>
         
-        <button className="group relative inline-flex items-center justify-center px-12 py-6 text-2xl font-bold text-black bg-white rounded-full overflow-hidden transition-transform hover:scale-105">
+        <button onClick={() => openModal()} className="group relative inline-flex items-center justify-center px-12 py-6 text-2xl font-bold text-black bg-white rounded-full overflow-hidden transition-transform hover:scale-105">
           <span className="absolute inset-0 w-full h-full -mt-1 rounded-lg opacity-30 bg-gradient-to-b from-transparent via-transparent to-black"></span>
           <span className="relative flex items-center gap-4">
             Отправить резюме 
@@ -314,15 +351,93 @@ export default function App() {
           © {new Date().getFullYear()} Vexio Studio. All code and bugs reserved.
         </p>
       </footer>
+
+      {/* Модальное окно */}
+      {modalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onClick={() => setModalOpen(false)}>
+          <div className="bg-zinc-900 border border-zinc-700 rounded-3xl p-8 md:p-10 max-w-lg w-full shadow-2xl" onClick={e => e.stopPropagation()}>
+            {!formSubmitted ? (
+              <>
+                <div className="flex justify-between items-start mb-6">
+                  <div>
+                    <h3 className="font-display font-black text-2xl uppercase">Откликнуться</h3>
+                    {selectedJob && <p className="text-emerald-400 text-sm mt-1 font-bold">{selectedJob}</p>}
+                  </div>
+                  <button onClick={() => setModalOpen(false)} className="p-2 hover:bg-zinc-800 rounded-full transition-colors">
+                    <X size={20} />
+                  </button>
+                </div>
+                <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+                  <div>
+                    <label className="block text-sm font-bold uppercase tracking-wider text-zinc-400 mb-2">Имя</label>
+                    <input
+                      type="text"
+                      required
+                      value={formName}
+                      onChange={e => setFormName(e.target.value)}
+                      placeholder="Иван Петров"
+                      className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-emerald-400 transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold uppercase tracking-wider text-zinc-400 mb-2">Ник в Telegram</label>
+                    <input
+                      type="text"
+                      required
+                      value={formTelegram}
+                      onChange={e => setFormTelegram(e.target.value)}
+                      placeholder="@username"
+                      className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-emerald-400 transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold uppercase tracking-wider text-zinc-400 mb-2">Номер телефона</label>
+                    <input
+                      type="tel"
+                      required
+                      value={formPhone}
+                      onChange={e => setFormPhone(e.target.value)}
+                      placeholder="+7 999 123-45-67"
+                      className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-emerald-400 transition-colors"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="mt-2 w-full bg-emerald-400 text-black font-bold py-4 rounded-xl hover:bg-emerald-300 transition-colors text-lg"
+                  >
+                    Отправить
+                  </button>
+                </form>
+              </>
+            ) : (
+              <div className="text-center py-8">
+                <div className="w-20 h-20 bg-emerald-400 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </div>
+                <h3 className="font-display font-black text-3xl uppercase mb-3">Заявка отправлена!</h3>
+                <p className="text-zinc-400">Мы свяжемся с тобой в ближайшее время.</p>
+                <button
+                  onClick={() => setModalOpen(false)}
+                  className="mt-8 px-8 py-3 bg-white text-black font-bold rounded-full hover:bg-emerald-400 transition-colors"
+                >
+                  Закрыть
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
 
 // Компонент карточки вакансии
-function JobCard({ title, stack, tag, color }) {
+function JobCard({ title, stack, tag, color, onApply }) {
   return (
-    <div className={`group relative flex flex-col md:flex-row justify-between md:items-center p-8 border-t border-zinc-800 transition-colors duration-300 cursor-pointer ${color} hover:text-black`}>
+    <div onClick={() => onApply(title)} className={`group relative flex flex-col md:flex-row justify-between md:items-center p-8 border-t border-zinc-800 transition-colors duration-300 cursor-pointer ${color} hover:text-black`}>
       <div className="z-10">
         <div className="flex items-center gap-4 mb-2">
           <span className="text-xs font-bold uppercase tracking-wider px-3 py-1 border border-current rounded-full">
