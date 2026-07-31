@@ -218,7 +218,7 @@ export default function App() {
             Vexio Careers
           </p>
           <h1 className="text-[12vw] sm:text-7xl md:text-[6.5rem] leading-[0.9] font-display font-black uppercase tracking-tighter">
-            Мы пишем <span className="text-outline inline-block text-left min-w-[10ch]">{displayText}<span className="typewriter-cursor">&nbsp;</span></span> код <br />
+            Мы пишем <span className="text-outline inline-block text-left min-w-[14ch]">{displayText}<span className="typewriter-cursor">&nbsp;</span></span> код <br />
             и ищем <span className="marker-highlight">своих</span> людей
           </h1>
           <p className="mt-12 text-xl md:text-2xl text-zinc-400 max-w-2xl font-medium leading-relaxed">
