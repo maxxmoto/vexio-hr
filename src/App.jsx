@@ -196,7 +196,7 @@ export default function App() {
       <nav className={`fixed w-full top-0 z-40 transition-all duration-300 border-b ${scrolled ? 'bg-[#09090b]/80 backdrop-blur-md border-zinc-800 py-4' : 'bg-transparent border-transparent py-6'}`}>
         <div className="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
            <div className="font-display font-black text-2xl tracking-tighter flex items-center gap-2">
-            <img src={import.meta.env.BASE_URL + 'logo.png'} alt="VEXIO" className="h-8 w-auto" style={{ transform: 'scale(1.4)' }} />
+            <img src={import.meta.env.BASE_URL + 'logo.png'} alt="VEXIO" className="h-6 md:h-8 w-auto md:scale-[1.4]" />
           </div>
           <div className="hidden md:flex gap-8 font-bold text-sm uppercase tracking-widest">
             <a href="#culture" className="hover:text-emerald-400 transition-colors hover:-translate-y-1 transform inline-block">Культура</a>
