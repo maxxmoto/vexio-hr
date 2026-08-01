@@ -352,6 +352,13 @@ export default function App() {
         </p>
       </footer>
 
+      <div className="border-t border-zinc-800 py-4 px-6 text-center text-sm text-zinc-500">
+        Создано с помощью{' '}
+        <a href="https://maxxmoto.github.io/vexio/" target="_blank" rel="noopener noreferrer" className="font-bold text-emerald-400 hover:text-emerald-300 underline underline-offset-2 transition-colors">
+          Vexio
+        </a>
+      </div>
+
       {/* Модальное окно */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onClick={() => setModalOpen(false)}>
