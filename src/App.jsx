@@ -314,7 +314,7 @@ export default function App() {
           />
           <JobCard 
             title="Project Manager" 
-            stack="Agile / Смысл / Здравый смысл" 
+            stack="Agile / Respect / Tim Lead" 
             tag="Удаленка" 
             color="hover:bg-blue-500"
             onApply={openModal}
